@@ -1,0 +1,7 @@
+# Documentation
+sphinx
+sphinx-autobuild
+
+# Testing
+pytest
+mock
