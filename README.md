@@ -1,6 +1,6 @@
 # SmartShip API
 
-Python library to interact with the Posti SmartShip API.
+Python library to interact with the Posti SmartShip / Unifaun Online API.
 
 ## TODO:
 
@@ -18,30 +18,13 @@ Python library to interact with the Posti SmartShip API.
 
 ## Usage
 
-### Authentication
-
-Username and secret API tokens must be set as environment variables. Create your API tokens in the [Unifaun Online portal](https://www.unifaunonline.com/).
-
-    export SMARTSHIP_API_USERNAME=1234567890
-    export SMARTSHIP_API_SECRET=0987654321
-
 ### Creating shipments
 
 This API supports the Smartship Shipments api for creating shipments and then downloading the generated PDF's.
 
-#### Configuration
-
-Some defaults can be set as environment variables, though they are optional. If they are not set, they must be given when creating shipments.
-
-    # Default sender quickId to use
-    export SMARTSHIP_SENDER_QUICKID=1
-    
-    # Default Posti customer number (Posti only)
-    export SMARTSHIP_CUSTNO_POSTI=123456
-
 #### Carriers
 
-There are methods for certain carriers like Posti to cover more common use cases. To use the Posti carrier, for example:
+There are methods for certain carriers like Posti to cover more common use cases. To create a shipment for the Posti carrier, for example:
 
     from smartship.carriers.posti import create_shipment
     receiver = {
@@ -51,15 +34,45 @@ There are methods for certain carriers like Posti to cover more common use cases
         "address1": "Iso Roobertinkatu 20-22",
         "zipcode": "00120"
     }
-    status_code, content = create_shipment("PO2102", receiver, [{"copies": 1}])
+    sender = {
+        "quickId": "1",
+    }
+    shipment = create_shipment(
+        "12345",  # Posti customer number
+        "PO2102",  # Service ID
+        receiver, 
+        sender, 
+        [{"copies": 1}]  # Parcels
+     )
 
-See more documentation in `smartship.carriers.posti` module. 
+See more documentation in `smartship.carriers.posti` module.
+
+### Client
+
+To send shipments and use other API resources, you need a client. Initialize the client as follows with a tuple of username and secret tokens. Create your API tokens in the [Unifaun Online portal](https://www.unifaunonline.com/).
+
+    from smartship.client import SmartShipClient
+    client = SmartShipClient(("username", "secret"))
+    
+#### Sending shipments
+
+Send a shipment as follows:
+
+    response = client.send_shipment(shipment)
+    
+Response will be a standard `HttpResponse` object with status code and content.
+
+Status codes:
+* 201 - Shipment was created OK
+* 422 - Validation error with the data, see response content
+
+For errors, `response.content` has the response JSON with possible error messages from Unifaun Online API.
 
 ### Agents
 
-    # TODO implement agents and address lookups for SmartPost needs
+*TODO: implement agents and address lookups for SmartPost needs*
 
-#### Advanced usage
+### Advanced usage
 
 See full Smartship [API documentation](https://smartship.unifaun.com/rs-docs/) for a full list of attributes that shipments can be given. All of these are supported when using `smartship.shipments.Shipment` directly. Import the relevant objects from `smartship.objects` and pass them to the `Shipment` object.
 

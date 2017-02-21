@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from mock import Mock, patch
+from mock import patch
+
+from smartship.client import SmartShipClient
 
 
 class TestShipment(object):
     def test_shipment_builds(self, simple_shipment):
         simple_shipment.build()
-        assert simple_shipment._data == {
+        assert simple_shipment.data == {
             'pdfConfig': {
                 'target2YOffset': 0,
                 'target2Media': 'laser-a4',
@@ -42,11 +44,14 @@ class TestShipment(object):
             }
         }
 
-    @patch("smartship.shipments.send", return_value="response")
-    def test_shipment_send(self, mock_send, simple_shipment):
-        simple_shipment.build = Mock()
-        simple_shipment._data = {"foo": "bar"}
-        response = simple_shipment.send()
-        simple_shipment.build.assert_called_once_with()
-        mock_send.assert_called_once_with("/shipments", {"foo": "bar"})
+    @patch("smartship.shipments.SmartShipClient.send_shipment", return_value="response")
+    def test_shipment_send(self, mock_send_shipment, simple_shipment):
+        response = simple_shipment.send(("username", "secret"))
+        mock_send_shipment.assert_called_once_with(simple_shipment)
         assert response == "response"
+
+    def test_init_client(self, simple_shipment):
+        simple_shipment._init_client(("username", "secret"))
+        assert isinstance(simple_shipment._client, SmartShipClient)
+        assert simple_shipment._client._username == "username"
+        assert simple_shipment._client._secret == "secret"

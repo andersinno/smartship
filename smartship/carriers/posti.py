@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from envparse import env
-
 from smartship.objects import Sender, SenderPartners, Receiver, Service, Parcels
 from smartship.shipments import Shipment
 
+
 CARRIER_CODE = "POSTI"
 CARRIER_DESCRIPTION = "Posti Oy, Paketit ja kuljetusyksiköt"
-
-CUSTNO = env("SMARTSHIP_CUSTNO_POSTI", default=None)
-DEFAULT_SENDER_QUICKID = env("SMARTSHIP_SENDER_QUICKID", default=None)
 
 SERVICES = {
     "PO2017": "Posti - EMS",
@@ -31,8 +27,7 @@ SERVICES = {
 }
 
 
-def create_shipment(service_id, receiver, parcels, sender=None, order_no=None, sender_reference=None, addons=None,
-                    custno=None):
+def create_shipment(custno, service_id, receiver, sender, parcels, order_no=None, sender_reference=None, addons=None):
     """
     Create a shipment using the Posti carrier.
 
@@ -44,12 +39,13 @@ def create_shipment(service_id, receiver, parcels, sender=None, order_no=None, s
             "address1": "Iso Roobertinkatu 20-22",
             "zipcode": "00120"
         }
-        status_code, content = create_shipment("PO2102", receiver, [{"copies": 1}])
+        sender = {
+            "quickId": "1",
+        }
+        shipment = create_shipment("12345", "PO2102", receiver, sender, [{"copies": 1}])
 
-    Returns response status code and content as a tuple. Status codes:
-        201 - Shipment was created OK
-        422 - Validation error with the data, see response content
-
+    :param custno: Posti customer number.
+    :type custno: str
     :param service_id: Service to use, see `SERVICES` constant or API documentation.
     :type service_id: str
     :param receiver: Receiver of the shipment. Must either have a 'quickId' or enough address information.
@@ -66,8 +62,7 @@ def create_shipment(service_id, receiver, parcels, sender=None, order_no=None, s
         See full specification of in the Smartship API documentation at
         https://smartship.unifaun.com/rs-docs/##creating_shipments
     :type parcels: list
-    :param sender: Sender information, define using SMARTSHIP_SENDER_QUICKID env variable or give the quickId or
-        full sender information. Has the same fields as `receiver`. (optional, if sender quickId defined via env)
+    :param sender: Sender information. Must either have a 'quickId' or enough address information.
     :type sender: dict
     :param order_no: Order number (optional)
     :type order_no: str
@@ -85,42 +80,33 @@ def create_shipment(service_id, receiver, parcels, sender=None, order_no=None, s
                 },
             ]
     :type addons: list
-    :param custno: Posti customer number. Optional if defined via SMARTSHIP_CUSTNO_POSTI env variable.
-    :type custno: str
-    :return: Response HTTP status code and response content as a tuple
-    :rtype: tuple
+    :return: Shipment instance
+    :rtype: smartship.shipments.Shipment
     """
+    _validate_create_shipment(service_id)
 
-    _validate_create_shipment(custno, sender, service_id)
-    kwargs = {}
-
-    if DEFAULT_SENDER_QUICKID:
-        kwargs["sender"] = Sender({"quickId": DEFAULT_SENDER_QUICKID})
-    else:
-        kwargs["sender"] = Sender(sender)
-    kwargs["senderPartners"] = SenderPartners([{"id": CARRIER_CODE, "custNo": custno or CUSTNO}])
+    kwargs = {
+        "sender": Sender(sender),
+        "senderPartners": SenderPartners([{"id": CARRIER_CODE, "custNo": custno}]),
+        "receiver": Receiver(receiver),
+        "parcels": Parcels(parcels),
+        "service": _build_service(addons, service_id),
+    }
     if order_no:
         kwargs["orderNo"] = order_no
     if sender_reference:
         kwargs["senderReference"] = sender_reference
-    kwargs["receiver"] = Receiver(receiver)
+
+    return Shipment(**kwargs)
+
+
+def _build_service(addons, service_id):
     service = Service({"id": service_id})
     if addons:
         service["addons"] = addons
-    kwargs["service"] = service
-    kwargs["parcels"] = Parcels(parcels)
-
-    shipment = Shipment(**kwargs)
-    response = shipment.send()
-
-    # TODO: return PDF urls?
-    return response.status_code, response.content
+    return service
 
 
-def _validate_create_shipment(custno, sender, service_id):
-    if not custno and not CUSTNO:
-        raise ValueError("Must give 'custno' or define environment variable 'SMARTSHIP_CUSTNO_POSTI'.")
-    if not sender and not DEFAULT_SENDER_QUICKID:
-        raise ValueError("Must give 'sender' or define environment variable 'SMARTSHIP_SENDER_QUICKID'.")
+def _validate_create_shipment(service_id):
     if service_id not in SERVICES:
         raise ValueError("Invalid 'service_id'.")

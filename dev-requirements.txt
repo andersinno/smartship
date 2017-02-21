@@ -3,5 +3,8 @@ sphinx
 sphinx-autobuild
 
 # Testing
-pytest
+coverage
 mock
+pytest
+pytest-cov
+pytest-warnings

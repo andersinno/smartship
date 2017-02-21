@@ -34,7 +34,6 @@ setup(
     license="?????",
     install_requires=[
         "attrs>=16.2.0,<17",
-        "envparse>=0.2.0,<0.3",
         "jsonschema>=2.0,<3",
         "requests>=2.11.1,<3",
     ],
