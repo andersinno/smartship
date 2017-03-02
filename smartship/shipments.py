@@ -5,7 +5,6 @@ import attr
 import six
 from jsonschema import validate
 
-from smartship.client import SmartShipClient
 from smartship.objects import Parcels, Receiver, Sender, SenderPartners, Service
 from smartship.schemas import REQUEST_SCHEMA
 
@@ -56,27 +55,6 @@ class Shipment(object):
         # Drop top-level key's with empty value
         self.data =  dict((key, value) for key, value in six.iteritems(data) if value)
         validate(self.data, REQUEST_SCHEMA)
-
-    def _init_client(self, authorization):
-        """
-        Initialize the SmartShip client.
-
-        :param authorization: Authorization details (tuple of username and secret)
-        :type authorization: tuple
-        """
-        self._client = SmartShipClient(authorization)
-
-    def send(self, authorization):
-        """
-        Helper method to send a Shipment.
-
-        :param authorization: Authorization details (tuple of username and secret)
-        :type authorization: tuple
-        :return: HttpResponse
-        """
-        self._init_client(authorization)
-        response = self._client.send_shipment(self)
-        return response
 
     def retrieve_pdfs(self):
         """

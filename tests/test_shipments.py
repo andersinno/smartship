@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from mock import patch
-
-from smartship.client import SmartShipClient
-
 
 class TestShipment(object):
     def test_shipment_builds(self, simple_shipment):
@@ -43,15 +39,3 @@ class TestShipment(object):
                 ]
             }
         }
-
-    @patch("smartship.shipments.SmartShipClient.send_shipment", return_value="response")
-    def test_shipment_send(self, mock_send_shipment, simple_shipment):
-        response = simple_shipment.send(("username", "secret"))
-        mock_send_shipment.assert_called_once_with(simple_shipment)
-        assert response == "response"
-
-    def test_init_client(self, simple_shipment):
-        simple_shipment._init_client(("username", "secret"))
-        assert isinstance(simple_shipment._client, SmartShipClient)
-        assert simple_shipment._client._username == "username"
-        assert simple_shipment._client._secret == "secret"

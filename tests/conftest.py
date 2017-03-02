@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import pytest
 from mock import Mock
 
-from smartship.client import SmartShipClient
+from smartship import Client
 from smartship.objects import Sender, SenderPartners, Parcels, Receiver, Service
 from smartship.shipments import Shipment
 
@@ -35,7 +35,7 @@ def simple_shipment():
 
 @pytest.fixture
 def smartship_client():
-    return SmartShipClient(("username", "secret"))
+    return Client("username", "secret")
 
 
 @pytest.fixture(autouse=True)

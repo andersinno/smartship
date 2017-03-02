@@ -49,10 +49,10 @@ See more documentation in `smartship.carriers.posti` module.
 
 ### Client
 
-To send shipments and use other API resources, you need a client. Initialize the client as follows with a tuple of username and secret tokens. Create your API tokens in the [Unifaun Online portal](https://www.unifaunonline.com/).
+To send shipments and use other API resources, you need a client. Initialize the client as follows with username and secret tokens. Create your API tokens in the [Unifaun Online portal](https://www.unifaunonline.com/).
 
-    from smartship.client import SmartShipClient
-    client = SmartShipClient(("username", "secret"))
+    from smartship import Client
+    client = Client("username", "secret")
     
 #### Sending shipments
 

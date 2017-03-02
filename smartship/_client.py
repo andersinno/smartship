@@ -5,20 +5,19 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 
-SMARTSHIP_API_ENDPOINT = "https://api.unifaun.com/rs-extapi/v1"
-
-
-class SmartShipClient(object):
+class Client(object):
     """
     Used for communicating with the Unifaun Online REST API.
     """
-    def __init__(self, authorization, api_url=None):
-        self._username = authorization[0]
-        self._secret = authorization[1]
+    SMARTSHIP_API_ENDPOINT = "https://api.unifaun.com/rs-extapi/v1"
+
+    def __init__(self, username, secret, api_url=None):
+        self._username = username
+        self._secret = secret
         if api_url:
             self._api_url = api_url
         else:
-            self._api_url = SMARTSHIP_API_ENDPOINT
+            self._api_url = self.SMARTSHIP_API_ENDPOINT
 
     def send_shipment(self, shipment):
         """
