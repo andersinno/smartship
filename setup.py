@@ -5,8 +5,6 @@ import os
 
 from setuptools import setup, find_packages
 
-from smartship import __version__
-
 
 description = "Posti SmartShip API"
 
@@ -17,7 +15,7 @@ def get_long_description():
 
 setup(
     name='smartship',
-    version=__version__,
+    version="0.0.1",
     description=description,
     # long_description=get_long_description(),
     author='Anders Innovations',
