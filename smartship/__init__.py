@@ -1,7 +1,14 @@
-from __future__ import unicode_literals
+import pkg_resources
 
 from ._client import Client
-from ._version import VERSION
 
 __author__ = "Anders Innovations"
-__version__ = VERSION
+
+try:
+    __version__ = pkg_resources.get_distribution(__name__).version
+except pkg_resources.DistributionNotFound:
+    __version__ = None
+
+__all__ = [
+    'Client',
+]
