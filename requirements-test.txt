@@ -1,7 +1,3 @@
-# Documentation
-sphinx
-sphinx-autobuild
-
 # Testing
 coverage
 mock

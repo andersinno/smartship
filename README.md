@@ -81,12 +81,21 @@ See full Smartship [API documentation](https://smartship.unifaun.com/rs-docs/) f
 ### Requirements
 
     pip install -U setuptools pip  # These should be up to date
-    pip install -e .
-    pip install -U -r dev-requirements.txt
+    pip install -r requirements-dev.txt
     
 ### Tests
 
+To test in the current virtual environment, run:
+
     py.test
+
+To check the coding style, run:
+
+    flake8
+
+To test all supported environments, run:
+
+    tox
 
 ### Building documentation
 
