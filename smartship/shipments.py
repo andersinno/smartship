@@ -5,9 +5,8 @@ import attr
 import six
 from jsonschema import validate
 
-from smartship.objects import Parcels, Receiver, Sender, SenderPartners, Service
-from smartship.schemas import REQUEST_SCHEMA
-
+from .objects import Parcels, Receiver, Sender, SenderPartners, Service
+from .schemas import REQUEST_SCHEMA
 
 DEFAULT_PDF_CONFIG = {
     "target2YOffset": 0,

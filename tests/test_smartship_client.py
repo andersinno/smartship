@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from mock import patch, Mock
+from mock import Mock, patch
 from requests.auth import HTTPBasicAuth
 
 from smartship import Client

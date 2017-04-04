@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from mock import patch
 
 from smartship.carriers.posti import create_shipment
-from smartship.shipments import Shipment, DEFAULT_PDF_CONFIG
+from smartship.shipments import DEFAULT_PDF_CONFIG, Shipment
 
 
 @patch("smartship.carriers.posti._validate_create_shipment")

@@ -5,7 +5,8 @@ import pytest
 from mock import Mock
 
 from smartship import Client
-from smartship.objects import Sender, SenderPartners, Parcels, Receiver, Service
+from smartship.objects import (
+    Parcels, Receiver, Sender, SenderPartners, Service)
 from smartship.shipments import Shipment
 
 
