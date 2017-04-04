@@ -52,7 +52,7 @@ class Shipment(object):
             data["shipment"]["senderReference"] = self.senderReference
         # TODO: set remaining attributes, if given
         # Drop top-level key's with empty value
-        self.data =  dict((key, value) for key, value in six.iteritems(data) if value)
+        self.data = dict((key, value) for key, value in six.iteritems(data) if value)
         validate(self.data, REQUEST_SCHEMA)
 
     def retrieve_pdfs(self):
