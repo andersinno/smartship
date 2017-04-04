@@ -5,7 +5,6 @@ import attr
 import six
 from jsonschema import validate
 
-from smartship.client import send
 from smartship.objects import Parcels, Receiver, Sender, SenderPartners, Service
 from smartship.schemas import REQUEST_SCHEMA
 
@@ -28,14 +27,18 @@ class Shipment(object):
     receiver = attr.ib(default=Receiver())
     parcels = attr.ib(default=Parcels())
     service = attr.ib(default=Service())
+    senderReference = attr.ib(default="")
     # TODO: add remaining attributes
 
-    _pdf_config = attr.ib(default=DEFAULT_PDF_CONFIG)
-    _data = attr.ib(default={})
+    data = attr.ib(default={})
+    pdf_config = attr.ib(default=DEFAULT_PDF_CONFIG)
 
     def build(self):
+        """
+        Build and validate the data for a Shipment.
+        """
         data = {
-            "pdfConfig": self._pdf_config,
+            "pdfConfig": self.pdf_config,
             "shipment": {
                 "sender": self.sender.get_json(),
                 "senderPartners": self.senderPartners.get_json(),
@@ -46,15 +49,12 @@ class Shipment(object):
         }
         if self.orderNo:
             data["shipment"]["orderNo"] = self.orderNo
+        if self.senderReference:
+            data["shipment"]["senderReference"] = self.senderReference
         # TODO: set remaining attributes, if given
         # Drop top-level key's with empty value
-        self._data =  dict((key, value) for key, value in six.iteritems(data) if value)
-        validate(self._data, REQUEST_SCHEMA)
-
-    def send(self):
-        self.build()
-        self.response = send("/shipments", self._data)
-        return self.response
+        self.data =  dict((key, value) for key, value in six.iteritems(data) if value)
+        validate(self.data, REQUEST_SCHEMA)
 
     def retrieve_pdfs(self):
         """

@@ -1,4 +1,7 @@
 from __future__ import unicode_literals
 
-__version__ = "0.0.1"
+from ._client import Client
+from ._version import VERSION
+
 __author__ = "Anders Innovations"
+__version__ = VERSION
