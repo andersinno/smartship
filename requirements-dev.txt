@@ -1,3 +1,4 @@
 -r requirements-doc.txt
 -r requirements-test.txt
 -e .
+tox
