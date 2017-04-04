@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from smartship.objects import Sender, SenderPartners, Receiver, Service, Parcels
-from smartship.shipments import Shipment
-
+from ..objects import Parcels, Receiver, Sender, SenderPartners, Service
+from ..shipments import Shipment
 
 CARRIER_CODE = "POSTI"
 CARRIER_DESCRIPTION = "Posti Oy, Paketit ja kuljetusyksiköt"

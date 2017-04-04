@@ -5,9 +5,8 @@ import attr
 import six
 from jsonschema import validate
 
-from smartship.objects import Parcels, Receiver, Sender, SenderPartners, Service
-from smartship.schemas import REQUEST_SCHEMA
-
+from .objects import Parcels, Receiver, Sender, SenderPartners, Service
+from .schemas import REQUEST_SCHEMA
 
 DEFAULT_PDF_CONFIG = {
     "target2YOffset": 0,
@@ -53,7 +52,7 @@ class Shipment(object):
             data["shipment"]["senderReference"] = self.senderReference
         # TODO: set remaining attributes, if given
         # Drop top-level key's with empty value
-        self.data =  dict((key, value) for key, value in six.iteritems(data) if value)
+        self.data = dict((key, value) for key, value in six.iteritems(data) if value)
         validate(self.data, REQUEST_SCHEMA)
 
     def retrieve_pdfs(self):
