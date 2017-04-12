@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import requests
 from requests.auth import HTTPBasicAuth
 
+from .constants import ResponseCode
+
 
 class Client(object):
     """
@@ -30,6 +32,38 @@ class Client(object):
         shipment.build()
         # TODO: Add logging
         return self._post("/shipments", shipment.data)
+
+    def get_pdf_data(self, shipment_response):
+        """
+        Fetch PDF-data according to a response to `send_shipment`.
+
+        :param shipment_response: Response to send_shipment call.
+        :type shipment_response: requests.models.Response
+        :return: PDF-data for each response fragment
+        :rtype: list[list[bytes]]
+        :raises: ValueError: if the response has the wrong status code for a shipment
+        :raises: KeyError: if the the JSON of the response doesn't conform to the schema
+        """
+        if shipment_response.status_code != ResponseCode.CREATED:
+            raise ValueError("Invalid shipment response status code: {!r}".format(
+                shipment_response.status_code))
+
+        # TODO: Add logging
+        results = []
+        for fragment in shipment_response.json():
+            result = []
+            shipment_id = fragment["id"]
+            for pdf in fragment["pdfs"]:
+                endpoint = "/shipments/%s/pdfs/%s" % (shipment_id, pdf["id"])
+                if not pdf["href"].endswith(endpoint):
+                    raise ValueError("PDF href field doesn't match the schema")
+                pdf_response = self._get(endpoint)
+                if pdf_response.status_code != ResponseCode.OK:
+                    raise ValueError("Invalid PDF response status code: {!r}".format(
+                        pdf_response.status_code))
+                result.append(pdf_response.content)
+            results.append(result)
+        return results
 
     def _post(self, endpoint, data):
         """
