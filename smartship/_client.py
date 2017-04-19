@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import requests
 from requests.auth import HTTPBasicAuth
 
+from .shipments import ShipmentResponse
+
 
 class Client(object):
     """
@@ -25,11 +27,14 @@ class Client(object):
 
         :param shipment: Shipment instance
         :type shipment: smartship.shipments.Shipment
-        :return: HttpResponse
+        :return: ShipmentResponse
         """
         shipment.build()
         # TODO: Add logging
-        return self._post("/shipments", shipment.data)
+        response = self._post("/shipments", shipment.data)
+        shipment_response = ShipmentResponse(response)
+        shipment_response.raise_for_status()
+        return shipment_response
 
     def _post(self, endpoint, data):
         """

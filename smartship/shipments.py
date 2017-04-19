@@ -5,6 +5,7 @@ import attr
 import six
 from jsonschema import validate
 
+from .constants import ResponseCode
 from .objects import Parcels, Receiver, Sender, SenderPartners, Service
 from .schemas import REQUEST_SCHEMA
 
@@ -55,9 +56,47 @@ class Shipment(object):
         self.data = dict((key, value) for key, value in six.iteritems(data) if value)
         validate(self.data, REQUEST_SCHEMA)
 
-    def retrieve_pdfs(self):
+
+class ShipmentResponseError(Exception):
+    def __init__(self, message, code, response):
+        super(ShipmentResponseError, self).__init__(message)
+        self.code = code
+        self.response = response
+
+
+class ShipmentResponse(object):
+    def __init__(self, response):
+        try:
+            self.response_code = ResponseCode(response.status_code)
+        except ValueError:
+            raise ValueError("Unknown response status %d" % response.status_code)
+        self.raw = response
+
+    def raise_for_status(self):
+        error_message = None
+        if self.response_code is ResponseCode.MISSING:
+            error_message = "Missing required attribute: %s" % self.raw.json()["message"]
+        elif self.response_code is ResponseCode.UNAUTHORIZED:
+            error_message = "Unauthorized API use: %s" % self.raw.reason
+        elif self.response_code is ResponseCode.VALIDATION_ERROR:
+            fields = ",".join(error["field"] for error in self.raw.json())
+            error_message = "Validation failed on fields: %s" % fields
+        elif self.response_code is ResponseCode.SERVER_ERROR:
+            try:
+                data = self.raw.json()
+            except ValueError as e:
+                error_message = e.message
+            if "message" not in data:
+                error_message = "Invalid server response"
+            else:
+                error_message = "Internal server error: %s" % data["message"]
+
+        if error_message is not None:
+            raise ShipmentResponseError(error_message, self.response_code, self.raw)
+
+    def get_pdfs(self, client):
         """
-        Fetch PDF files using the data in self.response.
+        Fetch PDF files from the raw data with authorization provided by the client.
         """
         # TODO implement
-        return []
+        return [[]]
