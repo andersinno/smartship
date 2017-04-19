@@ -34,6 +34,9 @@ class JSONObject(object):
     def get_json(self):
         return self._data
 
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__.__name__, self.get_json())
+
 
 class Agent(JSONObject):
     schema = ADDRESS_SCHEMA
