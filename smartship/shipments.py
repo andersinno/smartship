@@ -7,7 +7,7 @@ from jsonschema import validate
 
 from .constants import ResponseCode
 from .exceptions import ApiError
-from .objects import Parcels, Receiver, Sender, SenderPartners, Service
+from .objects import Agent, Parcels, Receiver, Sender, SenderPartners, Service
 from .schemas import REQUEST_SCHEMA
 
 DEFAULT_PDF_CONFIG = {
@@ -22,6 +22,7 @@ DEFAULT_PDF_CONFIG = {
 
 @attr.s
 class Shipment(object):
+    agent = attr.ib(default=Agent())
     orderNo = attr.ib(default=None)
     sender = attr.ib(default=Sender())
     senderPartners = attr.ib(default=SenderPartners())
@@ -48,6 +49,9 @@ class Shipment(object):
                 "service": self.service.get_json(),
             }
         }
+        agent = self.agent.get_json()
+        if agent:
+            data["shipment"]["agent"] = agent
         if self.orderNo:
             data["shipment"]["orderNo"] = self.orderNo
         if self.senderReference:

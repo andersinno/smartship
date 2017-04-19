@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from jsonschema import validate
 
 from .schemas import (
-    ADDRESS_SCHEMA, CUSTOMS_DECLARATION_SCHEMA, EXTRAS_SCHEMA, PARCELS_SCHEMA,
-    PARTNER_SCHEMA, SERVICE_SCHEMA)
+    ADDRESS_SCHEMA, AGENTS_SCHEMA, CUSTOMS_DECLARATION_SCHEMA, EXTRAS_SCHEMA,
+    PARCELS_SCHEMA, PARTNER_SCHEMA, SERVICE_SCHEMA)
 
 
 class JSONObject(object):
@@ -40,6 +40,10 @@ class JSONObject(object):
 
 class Agent(JSONObject):
     schema = ADDRESS_SCHEMA
+
+
+class Agents(JSONObject):
+    schema = AGENTS_SCHEMA
 
 
 class CustomsDeclaration(JSONObject):

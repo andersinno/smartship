@@ -156,6 +156,35 @@ ADDRESS_SCHEMA = {
     },
 }
 
+AGENT_ITEM_SCHEMA = {
+    "type": "object",
+    "required": ["id", "name", "city", "countryCode"],
+    "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "address1": {"type": ["string", "null"]},
+        "address2": {"type": ["string", "null"]},
+        "zipcode": {"type": ["string", "null"]},
+        "city": {"type": "string"},
+        "state": {"type": ["string", "null"]},
+        "countryCode": {"type": "string"},
+        "contact": {"type": ["string", "null"]},
+        "phone": {"type": ["string", "null"]},
+        "fax": {"type": ["string", "null"]},
+        "email": {"type": ["string", "null"]},
+        "sms": {"type": ["string", "null"]},
+        "serviceType": {"type": ["string", "null"]},
+        "serviceCode": {"type": ["string", "null"]},
+        "openingHours": {"type": ["string", "null"]},
+    },
+}
+
+AGENTS_SCHEMA = {
+    "type": "array",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "items": AGENT_ITEM_SCHEMA,
+}
+
 PARTNER_SCHEMA = {
     "type": "array",
     "items": {

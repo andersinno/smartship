@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from ..objects import Parcels, Receiver, Sender, SenderPartners, Service
+from ..objects import Agent, Parcels, Receiver, Sender, SenderPartners, Service
 from ..shipments import Shipment
 
 CARRIER_CODE = "POSTI"
@@ -26,7 +26,9 @@ SERVICES = {
 }
 
 
-def create_shipment(custno, service_id, receiver, sender, parcels, order_no=None, sender_reference=None, addons=None):
+def create_shipment(
+        custno, service_id, receiver, sender, parcels,
+        agent=None, order_no=None, sender_reference=None, addons=None):
     """
     Create a shipment using the Posti carrier.
 
@@ -63,6 +65,8 @@ def create_shipment(custno, service_id, receiver, sender, parcels, order_no=None
     :type parcels: list
     :param sender: Sender information. Must either have a 'quickId' or enough address information.
     :type sender: dict
+    :param agent: Pickup agent (optional)
+    :type agent: dict
     :param order_no: Order number (optional)
     :type order_no: str
     :param sender_reference: Sender reference (optional)
@@ -91,6 +95,8 @@ def create_shipment(custno, service_id, receiver, sender, parcels, order_no=None
         "parcels": Parcels(parcels),
         "service": _build_service(addons, service_id),
     }
+    if agent:
+        kwargs["agent"] = Agent(agent)
     if order_no:
         kwargs["orderNo"] = order_no
     if sender_reference:

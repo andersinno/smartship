@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 from .constants import ResponseCode
 from .exceptions import ApiError
+from .objects import Agents
 from .shipments import ShipmentResponse
 
 
@@ -57,6 +58,50 @@ class Client(object):
                 pdf_response
             )
         return pdf_response.content
+
+    def get_agents(self, country_code, agent_type, street=None, zipcode=None, agent_id=None):
+        """
+        Get agents (pickup location) information.
+
+        Example using receiver address to get the closest ones:
+            agents = client.get_agents("FI", "ITELLASP", "Iso Roobertinkatu 20-22", "00120")
+        Example using the agent id:
+            agents = client.get_agents("SE", "POSTNORD", agent_id="586181")
+
+        :param country_code: Two letter country code (from ISO-3166-1 alpha-2).
+        :type country_code: str
+        :param agent_type: Type of the agent. One of
+            (SBTL, SBTLFI, PP, PPFI, POSTNORD, DHLSP, DHLSPCOD, GLS, MHM, MHT, ITELLA, ITELLASP, BRING, BUSSGODS, UPS)
+        :type agent_type: str
+        :param street: The street name and number of the receiver's address for finding the closest agent.
+            NOTE: Can't be used with the agent_id parameter.
+        :type street: str
+        :param zipcode: The zipcode code of the receiver's address. NOTE: Can't be used with the agent_id parameter.
+        :type zipcode: str
+        :param agent_id: The ID of the agent used by the carrier. NOTE: Can't be used with zipcode or street parameters.
+        :type agent_id: str
+        :return: Agents
+        """
+        if agent_id and (street or zipcode):
+            raise ValueError("Agent ID and receiver address parameters cannot be used simultaneously")
+        params = {
+            "countryCode": country_code,
+            "type": agent_type,
+        }
+        if agent_id:
+            params["id"] = agent_id
+        else:
+            params["street"] = street
+            params["zip"] = zipcode
+
+        response = self._get("/addresses/agents", params)
+        status_code = response.status_code
+        if status_code == ResponseCode.MISSING:
+            raise ApiError(response.json()["message"], status_code, response)
+        elif status_code != ResponseCode.OK:
+            raise ApiError("Error getting agents information", status_code, response)
+
+        return Agents(response.json())
 
     def _post(self, endpoint, data):
         """
