@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 import requests
 from requests.auth import HTTPBasicAuth
 
-from .shipments import ShipmentResponse
+from .constants import ResponseCode
+from .shipments import ShipmentResponse, ShipmentResponseError
 
 
 class Client(object):
@@ -35,6 +36,27 @@ class Client(object):
         shipment_response = ShipmentResponse(response)
         shipment_response.raise_for_status()
         return shipment_response
+
+    def get_pdf(self, shipment_id, pdf_id):
+        """
+        Get specified PDF data for a shipment
+
+        :param shipment_id: Shipment identifier from a shipment response
+        :type shipment_id: str
+        :param pdf_id: PDF identifier from a shipment response
+        :type pdf_id: str
+        :return: bytes
+        """
+        endpoint = "/shipments/%s/pdfs/%s" % (shipment_id, pdf_id)
+        pdf_response = self._get(endpoint)
+        if pdf_response.status_code != ResponseCode.OK:
+            # TODO: Just ApiError
+            raise ShipmentResponseError(
+                "Invalid PDF response status code: %r" % pdf_response.status_code,
+                pdf_response.status_code,
+                pdf_response
+            )
+        return pdf_response.content
 
     def _post(self, endpoint, data):
         """
