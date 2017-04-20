@@ -100,3 +100,7 @@ class ShipmentResponse(object):
         """
         # TODO implement
         return [[]]
+
+    @property
+    def data(self):
+        return self.raw.json()

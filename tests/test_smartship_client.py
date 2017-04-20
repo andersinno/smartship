@@ -34,13 +34,15 @@ def test_get(mock_get, smartship_client):
 def test_send_shipment(smartship_client, simple_shipment):
     simple_shipment.build()
     simple_shipment.build = Mock()
-    mock_response = Mock(status_code=200)
+    data = [{"parcels": [{"parcelNo": "1234"}]}]
+    mock_response = Mock(status_code=201, json=lambda: data)
     smartship_client._post = Mock(return_value=mock_response)
     response = smartship_client.send_shipment(simple_shipment)
     simple_shipment.build.assert_called_once_with()
     smartship_client._post.assert_called_once_with("/shipments", simple_shipment.data)
     assert response.raw is mock_response
-    assert response.response_code is ResponseCode.OK
+    assert response.response_code is ResponseCode.CREATED
+    assert response.data == data
 
 
 def test_send_shipment_error(smartship_client, simple_shipment):
