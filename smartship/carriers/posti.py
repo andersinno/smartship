@@ -25,6 +25,23 @@ SERVICES = {
     "PO2106": "Posti - SmartPOST Viro",
 }
 
+NATIONAL_SERVICE_KEYS = [
+    'ITPR',
+    'PO2102',
+    'PO2103',
+    'PO2104',
+    'PO2108',
+    'PO2144',
+    'PO2461',
+    'PO5041',
+]
+
+NATIONAL_SERVICES = {
+    key: description
+    for (key, description) in SERVICES.items()
+    if key in NATIONAL_SERVICE_KEYS
+}
+
 
 def create_shipment(
         custno, service_id, receiver, sender, parcels,
