@@ -6,7 +6,7 @@ from mock import Mock
 
 from smartship import Client
 from smartship.objects import (
-    Parcels, Receiver, Sender, SenderPartners, Service)
+    Agent, Parcels, Receiver, Sender, SenderPartners, Service)
 from smartship.shipments import Shipment
 
 
@@ -31,6 +31,57 @@ def simple_shipment():
         service=Service({
             "id": "SER",
         })
+    )
+
+
+@pytest.fixture
+def complex_shipment():
+    return Shipment(
+        orderNo="456",
+        senderReference="789",
+        sender=Sender({
+            "quickId": "1",
+        }),
+        senderPartners=SenderPartners([{
+            "id": "PAR",
+            "custNo": "1"
+        }]),
+        parcels=Parcels([{
+            "copies": 1,
+            "weight": 2,
+            "volume": 3,
+            "contents": "Stuff",
+            "valuePerParcel": True,
+            "dangerousGoods": {
+                "unCode": "1234",
+                "hazardCode": "1.1",
+                "packageCode": "I",
+                "description": "Dangerous stuff",
+                "adrClass": "1",
+                "netWeight": 12,
+                "trCode": "E"
+            },
+        }]),
+        receiver=Receiver({
+            "quickId": "2",
+        }),
+        service=Service({
+            "id": "SER",
+            "addons": [
+                {
+                    "id": "DNG",
+                    "declarant": "Company Inc."
+                },
+                {
+                    "id": "SPTR"
+                }
+            ],
+        }),
+        agent=Agent({
+            "name": "Foo Bar",
+            "city": "HELSINKI",
+            "country": "FI",
+        }),
     )
 
 

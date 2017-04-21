@@ -7,6 +7,8 @@ from requests.auth import HTTPBasicAuth
 
 from smartship import Client
 from smartship.constants import ResponseCode
+from smartship.exceptions import ApiError
+from smartship.objects import Agents
 from smartship.shipments import ShipmentResponse, ShipmentResponseError
 
 
@@ -103,3 +105,51 @@ def test_get_pdf_data_fail(smartship_client):
     with raises(ShipmentResponseError):
         shipment_response = ShipmentResponse(Mock(status_code=200))
         shipment_response.get_pdfs(smartship_client)
+
+
+def test_get_agents(smartship_client):
+    smartship_client._get = lambda *args: Mock(
+        status_code=200, json=lambda:
+            [{
+              "id": "1",
+              "name": "Supermarket",
+              "address1": "Teststreet 9",
+              "address2": None,
+              "zipcode": "00120",
+              "city": "HELSINKI",
+              "state": None,
+              "countryCode": "FI",
+              "contact": None,
+              "phone": None,
+              "fax": None,
+              "email": None,
+              "sms": None,
+              "serviceType": None,
+              "serviceCode": None,
+              "openingHours": None
+            }]
+    )
+    agents = smartship_client.get_agents("FI", "ITELLASP", "Teststreet 10", "00120")
+    assert isinstance(agents, Agents)
+    data = agents.get_json()
+    assert data[0]["id"] == "1"
+
+
+def test_get_agents_bad_args(smartship_client):
+    smartship_client._get = Mock()
+    with raises(ValueError):
+        smartship_client.get_agents("FI", "ITELLA", "Teststreet 10", "00120", agent_id="1234")
+
+
+def test_get_agents_illegal_type(smartship_client):
+    smartship_client._get = lambda *args: Mock(
+        status_code=400, json=lambda:
+            {'code': 'ILLEGAL_ARG', 'message': 'Illegal type argument'}
+    )
+    try:
+        smartship_client.get_agents("FI", "FOO", agent_id="123")
+    except ApiError as e:
+        assert e.args[0] == 'Illegal type argument'
+        assert e.code == ResponseCode.MISSING
+    else:
+        assert False
