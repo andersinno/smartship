@@ -6,6 +6,7 @@ import six
 from jsonschema import validate
 
 from .constants import ResponseCode
+from .exceptions import ApiError
 from .objects import Parcels, Receiver, Sender, SenderPartners, Service
 from .schemas import REQUEST_SCHEMA
 
@@ -57,11 +58,8 @@ class Shipment(object):
         validate(self.data, REQUEST_SCHEMA)
 
 
-class ShipmentResponseError(Exception):
-    def __init__(self, message, code, response):
-        super(ShipmentResponseError, self).__init__(message)
-        self.code = code
-        self.response = response
+class ShipmentResponseError(ApiError):
+    pass
 
 
 class ShipmentResponse(object):
@@ -96,10 +94,35 @@ class ShipmentResponse(object):
 
     def get_pdfs(self, client):
         """
-        Fetch PDF files from the raw data with authorization provided by the client.
+        Extract PDF data from the response or fetch it if missing.
+
+        :param client: Smartship client with valid credentials
+        :type client: smartship.Client
+        :return: PDF-data for each response fragment
+        :rtype: list[list[bytes]]
+        :raises: ShipmentResponseError: if the response has the wrong status code for a shipment
+        :raises: KeyError: if the the JSON of the response doesn't conform to the schema
         """
-        # TODO implement
-        return [[]]
+        if self.response_code != ResponseCode.CREATED:
+            raise ShipmentResponseError(
+                "Invalid shipment response status code: %r" % self.response_code, self.response_code, self.raw
+            )
+
+        # TODO: Add logging
+        results = []
+        for fragment in self.raw.json():
+            result = []
+            shipment_id = fragment["id"]
+            for pdf in fragment["pdfs"]:
+                # Check if PDF data was already included in the response
+                if pdf.get("pdf"):
+                    # Use existing data
+                    result.append(pdf["pdf"])
+                else:
+                    # Fetch missing data
+                    result.append(client.get_pdf(shipment_id, pdf["id"]))
+            results.append(result)
+        return results
 
     @property
     def data(self):
