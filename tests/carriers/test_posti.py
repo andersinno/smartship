@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from jsonschema import ValidationError
 from mock import patch
+from pytest import raises
 
 from smartship.carriers.posti import create_shipment
 from smartship.shipments import DEFAULT_PDF_CONFIG, Shipment
@@ -113,3 +115,63 @@ def test_create_more_complex_shipment(mock_validate):
             'senderReference': "sender ref",
         }
     }
+
+
+@patch("smartship.carriers.posti._validate_create_shipment")
+def test_create_invalid_mobile_shipment(mock_validate):
+    receiver = {
+        "name": "Anders Innovations",
+        "city": "Helsinki",
+        "country": "FI",
+        "address1": "Iso Roobertinkatu 20-22",
+        "zipcode": "00120"
+    }
+    sender = {
+        "quickId": "1",
+    }
+    parcels = [{"copies": 1}]
+    # Invalid: Missing required "mobile" field.
+    with raises(ValidationError):
+        create_shipment("custno", "PO2104", receiver, sender, parcels)
+    mock_validate.assert_called_once_with("PO2104")
+
+
+@patch("smartship.carriers.posti._validate_create_shipment")
+def test_create_invalid_agent_shipment(mock_validate):
+    receiver = {
+        "name": "Anders Innovations",
+        "city": "Helsinki",
+        "country": "FI",
+        "address1": "Iso Roobertinkatu 20-22",
+        "zipcode": "00120"
+    }
+    sender = {
+        "quickId": "1",
+    }
+    agent = {
+        "quickId": "2"
+    }
+    parcels = [{"copies": 1}]
+    # Invalid: Missing required "mobile" field.
+    with raises(ValidationError):
+        create_shipment("custno", "PO2103", receiver, sender, parcels, agent=agent)
+    mock_validate.assert_called_once_with("PO2103")
+
+
+@patch("smartship.carriers.posti._validate_create_shipment")
+def test_create_invalid_parcel_shipment(mock_validate):
+    receiver = {
+        "name": "Anders Innovations",
+        "city": "Helsinki",
+        "country": "FI",
+        "address1": "Iso Roobertinkatu 20-22",
+        "zipcode": "00120"
+    }
+    sender = {
+        "quickId": "1",
+    }
+    parcels = [{"copies": 1}]
+    # Invalid: Missing required "weight" field
+    with raises(ValidationError):
+        create_shipment("custno", "PO5041", receiver, sender, parcels)
+    mock_validate.assert_called_once_with("PO5041")
