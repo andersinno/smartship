@@ -5,7 +5,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 from .constants import ResponseCode
-from .shipments import ShipmentResponse, ShipmentResponseError
+from .exceptions import ApiError
+from .shipments import ShipmentResponse
 
 
 class Client(object):
@@ -50,8 +51,7 @@ class Client(object):
         endpoint = "/shipments/%s/pdfs/%s" % (shipment_id, pdf_id)
         pdf_response = self._get(endpoint)
         if pdf_response.status_code != ResponseCode.OK:
-            # TODO: Just ApiError
-            raise ShipmentResponseError(
+            raise ApiError(
                 "Invalid PDF response status code: %r" % pdf_response.status_code,
                 pdf_response.status_code,
                 pdf_response

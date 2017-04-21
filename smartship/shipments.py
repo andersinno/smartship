@@ -6,6 +6,7 @@ import six
 from jsonschema import validate
 
 from .constants import ResponseCode
+from .exceptions import ApiError
 from .objects import Parcels, Receiver, Sender, SenderPartners, Service
 from .schemas import REQUEST_SCHEMA
 
@@ -57,11 +58,8 @@ class Shipment(object):
         validate(self.data, REQUEST_SCHEMA)
 
 
-class ShipmentResponseError(Exception):
-    def __init__(self, message, code, response):
-        super(ShipmentResponseError, self).__init__(message)
-        self.code = code
-        self.response = response
+class ShipmentResponseError(ApiError):
+    pass
 
 
 class ShipmentResponse(object):
