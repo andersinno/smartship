@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from copy import deepcopy
+
 from ..objects import Agent, Parcels, Receiver, Sender, SenderPartners, Service
 from ..shipments import Shipment
 
@@ -24,6 +26,33 @@ SERVICES = {
     "ITPR": "Posti - Priority Parcel",
     "PO2106": "Posti - SmartPOST Viro",
 }
+
+NATIONAL_SERVICE_KEYS = [
+    'ITPR',
+    'PO2102',
+    'PO2103',
+    'PO2104',
+    'PO2108',
+    'PO2144',
+    'PO2461',
+    'PO5041',
+]
+
+NATIONAL_SERVICES = {
+    key: description
+    for (key, description) in SERVICES.items()
+    if key in NATIONAL_SERVICE_KEYS
+}
+
+
+class MobileReceiver(Receiver):
+    schema = deepcopy(Receiver.schema)
+    schema["oneOf"][0] = {"required": ["name", "city", "country", "mobile"]}
+
+
+class WeightedParcels(Parcels):
+    schema = deepcopy(Parcels.schema)
+    schema["items"]["required"].append("weight")
 
 
 def create_shipment(
@@ -87,12 +116,14 @@ def create_shipment(
     :rtype: smartship.shipments.Shipment
     """
     _validate_create_shipment(service_id)
+    receiver_class = _infer_receiver_class(service_id, agent)
+    parcels_class = _infer_parcels_class(service_id)
 
     kwargs = {
         "sender": Sender(sender),
         "senderPartners": SenderPartners([{"id": CARRIER_CODE, "custNo": custno}]),
-        "receiver": Receiver(receiver),
-        "parcels": Parcels(parcels),
+        "receiver": receiver_class(receiver),
+        "parcels": parcels_class(parcels),
         "service": _build_service(addons, service_id),
     }
     if agent:
@@ -115,3 +146,17 @@ def _build_service(addons, service_id):
 def _validate_create_shipment(service_id):
     if service_id not in SERVICES:
         raise ValueError("Invalid 'service_id'.")
+
+
+def _infer_receiver_class(service_id, agent):
+    if service_id == "PO2104":
+        return MobileReceiver
+    if service_id == "PO2103" and agent:
+        return MobileReceiver
+    return Receiver
+
+
+def _infer_parcels_class(service_id):
+    if service_id == "PO5041":
+        return WeightedParcels
+    return Parcels
