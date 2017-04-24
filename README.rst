@@ -6,11 +6,7 @@ Python library to interact with the Posti SmartShip / Unifaun Online API.
 TODO
 ----
 
-* Agent lookups
-* Shipment PDF fetching
-* Tests
 * Docs
-* Check schema
 * Implement remaining attributes in Shipment as per schema
 * Add logging where necessary
 
@@ -47,12 +43,16 @@ cases. To create a shipment for the Posti carrier, for example:
     sender = {
         "quickId": "1",
     }
+    agent = {
+        "quickId": "2",
+    }
     shipment = create_shipment(
         "12345",  # Posti customer number
         "PO2102",  # Service ID
         receiver,
         sender,
-        [{"copies": 1}]  # Parcels
+        [{"copies": 1}],  # Parcels
+        agent=agent,  # Optional pickup point
      )
 
 See more documentation in ``smartship.carriers.posti`` module.
@@ -79,21 +79,35 @@ Send a shipment as follows:
 
     response = client.send_shipment(shipment)
 
-Response will be a standard ``HttpResponse`` object with status code and
-content.
+Response will be a special ``ShipmentResponse`` wrapping a ``HttpResponse`` object with response code and
+JSON content in ``response.data``.
 
 Status codes:
 
 * 201 - Shipment was created OK
-* 422 - Validation error with the data, see response content
+* 422 - Validation error with the data. Raises a ``ShipmentResponseError``.
 
-For errors, ``response.content`` has the response JSON with possible error
-messages from Unifaun Online API.
+For errors see ``error.response.json()`` for details from Unifaun Online API.
+
+Shipment address PDF slips
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once you have the response retrieve associated PDF data as follows:
+
+.. code:: python
+    data = response.get_pdfs(client)  # Client needed in case of additional fetching
+    pdf_data = data[0][0]  # Simplest case with a single shipment with a single parcel
 
 Agents
 ~~~~~~
 
-*TODO: implement agents and address lookups for SmartPost needs*
+Retrieve a list of agents (pickup points) as follows:
+
+.. code:: python
+
+    agents = client.get_agents("FI", "ITELLASP", "Iso Roobertinkatu 20-22", "00120")
+
+Response will be an ``Agents`` object that can be iterated over for individual agent data.
 
 Advanced usage
 ~~~~~~~~~~~~~~
