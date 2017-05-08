@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
+from requests.compat import json
+
 
 class TestShipment(object):
     def test_shipment_builds(self, simple_shipment):
@@ -81,8 +85,8 @@ class TestShipment(object):
                 'parcels': [
                     {
                         'copies': 1,
-                        'weight': 2,
-                        'volume': 3,
+                        'weight': Decimal('1.23'),
+                        'volume': Decimal('45.6'),
                         'contents': 'Stuff',
                         'valuePerParcel': True,
                         'dangerousGoods': {
@@ -91,7 +95,7 @@ class TestShipment(object):
                             'packageCode': 'I',
                             'description': 'Dangerous stuff',
                             'adrClass': '1',
-                            'netWeight': 12,
+                            'netWeight': Decimal('1.23'),
                             'trCode': 'E'
                         },
                     }
@@ -103,3 +107,10 @@ class TestShipment(object):
                 }
             }
         }
+
+    def test_complex_shipment_serializes(self, complex_shipment):
+        """
+        Test that requests can send data with Decimal values.
+        """
+        complex_shipment.build()
+        json.dumps(complex_shipment.data)

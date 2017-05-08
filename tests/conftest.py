@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from decimal import Decimal
+
 import pytest
 from mock import Mock
 
@@ -48,8 +50,8 @@ def complex_shipment():
         }]),
         parcels=Parcels([{
             "copies": 1,
-            "weight": 2,
-            "volume": 3,
+            "weight": Decimal("1.23"),
+            "volume": Decimal("45.6"),
             "contents": "Stuff",
             "valuePerParcel": True,
             "dangerousGoods": {
@@ -58,7 +60,7 @@ def complex_shipment():
                 "packageCode": "I",
                 "description": "Dangerous stuff",
                 "adrClass": "1",
-                "netWeight": 12,
+                "netWeight": Decimal("1.23"),
                 "trCode": "E"
             },
         }]),
