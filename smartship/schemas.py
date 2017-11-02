@@ -482,6 +482,25 @@ EXTRAS_SCHEMA = {
     }
 }
 
+PDF_CONFIG_SCHEMA = {
+    "type": "object",
+    "required": ["target1Media"],
+    "properties": {
+        "target1Media": {"type": "string"},
+        "target1XOffset": {"type": "number"},
+        "target1YOffset": {"type": "number"},
+        "target2Media": {"type": "string"},
+        "target2XOffset": {"type": "number"},
+        "target2YOffset": {"type": "number"},
+        "target3Media": {"type": "string"},
+        "target3XOffset": {"type": "number"},
+        "target3YOffset": {"type": "number"},
+        "target4Media": {"type": "string"},
+        "target4XOffset": {"type": "number"},
+        "target4YOffset": {"type": "number"}
+    }
+}
+
 REQUEST_SCHEMA = {
     "type": "object",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -513,24 +532,7 @@ REQUEST_SCHEMA = {
             ]
 
         },
-        "pdfConfig": {
-            "type": "object",
-            "required": ["target1Media"],
-            "properties": {
-                "target1Media": {"type": "string"},
-                "target1XOffset": {"type": "number"},
-                "target1YOffset": {"type": "number"},
-                "target2Media": {"type": "string"},
-                "target2XOffset": {"type": "number"},
-                "target2YOffset": {"type": "number"},
-                "target3Media": {"type": "string"},
-                "target3XOffset": {"type": "number"},
-                "target3YOffset": {"type": "number"},
-                "target4Media": {"type": "string"},
-                "target4XOffset": {"type": "number"},
-                "target4YOffset": {"type": "number"}
-            }
-        }
+        "pdfConfig": PDF_CONFIG_SCHEMA
     }
 }
 

@@ -7,16 +7,14 @@ from jsonschema import validate
 
 from .constants import ResponseCode
 from .exceptions import ApiError
-from .objects import Agent, Parcels, Receiver, Sender, SenderPartners, Service
+from .objects import (
+    Agent, Parcels, PDFConfig, Receiver, Sender, SenderPartners, Service)
 from .schemas import REQUEST_SCHEMA
 
 DEFAULT_PDF_CONFIG = {
-    "target2YOffset": 0,
-    "target1Media": "laser-ste",
+    "target1Media": "laser-a5",
     "target1YOffset": 0,
-    "target2Media": "laser-a4",
     "target1XOffset": 0,
-    "target2XOffset": 0
 }
 
 
@@ -33,14 +31,13 @@ class Shipment(object):
     # TODO: add remaining attributes
 
     data = attr.ib(default={})
-    pdf_config = attr.ib(default=DEFAULT_PDF_CONFIG)
+    pdfConfig = attr.ib(default=PDFConfig())
 
     def build(self):
         """
         Build and validate the data for a Shipment.
         """
         data = {
-            "pdfConfig": self.pdf_config,
             "shipment": {
                 "sender": self.sender.get_json(),
                 "senderPartners": self.senderPartners.get_json(),
@@ -49,6 +46,8 @@ class Shipment(object):
                 "service": self.service.get_json(),
             }
         }
+        pdf_config = self.pdfConfig.get_json()
+        data["pdfConfig"] = pdf_config if pdf_config else DEFAULT_PDF_CONFIG
         agent = self.agent.get_json()
         if agent:
             data["shipment"]["agent"] = agent

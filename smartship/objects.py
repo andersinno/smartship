@@ -5,7 +5,7 @@ from jsonschema import validate
 
 from .schemas import (
     ADDRESS_SCHEMA, AGENTS_SCHEMA, CUSTOMS_DECLARATION_SCHEMA, EXTRAS_SCHEMA,
-    PARCELS_SCHEMA, PARTNER_SCHEMA, SERVICE_SCHEMA)
+    PARCELS_SCHEMA, PARTNER_SCHEMA, PDF_CONFIG_SCHEMA, SERVICE_SCHEMA)
 
 
 class JSONObject(object):
@@ -100,3 +100,7 @@ class Service(JSONObject):
 
 class TaxPayer(JSONObject):
     schema = ADDRESS_SCHEMA
+
+
+class PDFConfig(JSONObject):
+    schema = PDF_CONFIG_SCHEMA

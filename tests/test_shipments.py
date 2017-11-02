@@ -11,12 +11,9 @@ class TestShipment(object):
         simple_shipment.build()
         assert simple_shipment.data == {
             'pdfConfig': {
-                'target2YOffset': 0,
-                'target2Media': 'laser-a4',
-                'target1XOffset': 0,
-                'target2XOffset': 0,
-                'target1Media': 'laser-ste',
-                'target1YOffset': 0
+                'target1Media': 'laser-a5',
+                'target1YOffset': 0,
+                'target1XOffset': 0
             },
             'shipment': {
                 'sender': {
@@ -48,12 +45,9 @@ class TestShipment(object):
         complex_shipment.build()
         assert complex_shipment.data == {
             'pdfConfig': {
-                'target2YOffset': 0,
-                'target2Media': 'laser-a4',
-                'target1XOffset': 0,
-                'target2XOffset': 0,
-                'target1Media': 'laser-ste',
-                'target1YOffset': 0
+                'target1Media': 'laser-2a5',
+                'target1YOffset': 1,
+                'target1XOffset': 1
             },
             'shipment': {
                 'sender': {

@@ -8,7 +8,7 @@ from mock import Mock
 
 from smartship import Client
 from smartship.objects import (
-    Agent, Parcels, Receiver, Sender, SenderPartners, Service)
+    Agent, Parcels, PDFConfig, Receiver, Sender, SenderPartners, Service)
 from smartship.shipments import Shipment
 
 
@@ -83,6 +83,11 @@ def complex_shipment():
             "name": "Foo Bar",
             "city": "HELSINKI",
             "country": "FI",
+        }),
+        pdfConfig=PDFConfig({
+            "target1Media": "laser-2a5",
+            "target1YOffset": 1,
+            "target1XOffset": 1
         }),
     )
 
