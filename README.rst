@@ -53,9 +53,33 @@ cases. To create a shipment for the Posti carrier, for example:
         sender,
         [{"copies": 1}],  # Parcels
         agent=agent,  # Optional pickup point
+        pdf_config=pdf_config,  # Optional custom PDF config
      )
 
 See more documentation in ``smartship.carriers.posti`` module.
+
+PDF Config
+''''''''''
+
+If you want to pass a custom ``pdf_config``, it should have the following structure:
+
+.. code:: python
+
+    {
+    "target1Media": "laser-a5",
+    "target1YOffset": 0,
+    "target1XOffset": 0
+    }
+
+With ``"target1Media"`` being one of the following options::
+
+    "laser-a5"
+    "laser-2a5"
+    "laser-ste"
+    "thermo-se"
+    "thermo-225"
+
+You can customize the offset with ``"target1YOffset"`` and ``"target1XOffset"`` parameters.
 
 Client
 ~~~~~~
@@ -95,6 +119,7 @@ Shipment address PDF slips
 Once you have the response retrieve associated PDF data as follows:
 
 .. code:: python
+
     data = response.get_pdfs(client)  # Client needed in case of additional fetching
     pdf_data = data[0][0]  # Simplest case with a single shipment with a single parcel
 
