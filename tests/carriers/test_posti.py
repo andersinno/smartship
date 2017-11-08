@@ -90,7 +90,7 @@ def test_create_more_complex_shipment(mock_validate):
     addons = [{"id": "DNG", "declarant": "Anders", }, {"id": "SPTR", }]
     shipment = create_shipment(
         "custno", "service_id", receiver, sender, parcels, order_no="orderno", sender_reference="sender ref",
-        addons=addons
+        pdf_config=DEFAULT_PDF_CONFIG, addons=addons
     )
     mock_validate.assert_called_once_with("service_id")
     assert isinstance(shipment, Shipment)
