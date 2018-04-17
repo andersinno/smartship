@@ -56,10 +56,15 @@ def test_send_shipment_error(smartship_client, simple_shipment):
         ResponseCode.UNAUTHORIZED: None,
         ResponseCode.VALIDATION_ERROR: [{"field": "zipcode"}, {"field": "city"}],
         ResponseCode.SERVER_ERROR: {"message": "Internal server error"},
+        ResponseCode.SERVER_ERROR: "Internal error",
         481: None,
     }
     for code, content in mock_content.items():
-        mock_response = Mock(status_code=int(code), json=lambda: content, reason="Unauthorized")
+        def mock_json():
+            if content == "Internal error":
+                raise ValueError("No JSON object could be decoded")
+            return content
+        mock_response = Mock(status_code=int(code), json=mock_json, reason="Unauthorized")
         smartship_client._post = Mock(return_value=mock_response)
         try:
             smartship_client.send_shipment(simple_shipment)
