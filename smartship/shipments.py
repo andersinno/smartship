@@ -85,12 +85,12 @@ class ShipmentResponse(object):
         elif self.response_code is ResponseCode.SERVER_ERROR:
             try:
                 data = self.raw.json()
+                if "message" not in data:
+                    error_message = "Invalid server response"
+                else:
+                    error_message = "Internal server error: %s" % data["message"]
             except ValueError as e:
-                error_message = e.message
-            if "message" not in data:
-                error_message = "Invalid server response"
-            else:
-                error_message = "Internal server error: %s" % data["message"]
+                error_message = str(e)
 
         if error_message is not None:
             raise ShipmentResponseError(error_message, self.response_code, self.raw)
