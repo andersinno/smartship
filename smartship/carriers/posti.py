@@ -3,8 +3,11 @@ from __future__ import unicode_literals
 
 from copy import deepcopy
 
+import requests
+
 from ..objects import (
-    Agent, Parcels, PDFConfig, Receiver, Sender, SenderPartners, Service)
+    Agent, Locations, Parcels, PDFConfig, Receiver, Sender, SenderPartners,
+    Service)
 from ..shipments import Shipment
 
 CARRIER_CODE = "POSTI"
@@ -44,6 +47,8 @@ NATIONAL_SERVICES = {
     for (key, description) in SERVICES.items()
     if key in NATIONAL_SERVICE_KEYS
 }
+
+LOCATION_SERVICE_API_ENDPOINT = "https://locationservice.posti.com/location"
 
 
 class MobileReceiver(Receiver):
@@ -165,3 +170,74 @@ def _infer_parcels_class(service_id):
     if service_id == "PO5041":
         return WeightedParcels
     return Parcels
+
+
+def get_locations(
+        country_code=None, top=None,
+        types=None, lattitude=None, longitude=None, distance=None, bounding_box=None,
+        zipcode=None, location_zipcode=None, strict_zip_code=None, city=None, municipality=None,
+        pup_code=None, partner_type=None):
+    """
+    :param country_code: Limits results to given county. Default value is FI (Finland)
+    :type country_code: str
+    :param top: Amount of locations to return. API returns this amount of closest locations
+    :type top: int
+    :param types: supported location types are "POSTOFFICE", "LETTERBOX", "SMARTPOST", "PICKUPPOINT",
+        "BUSINESSSERVICE", "POBOX", "LOCKER"
+    :type types: list
+    :param lattitude: Latitude of center location that search is done for. Top or distance parameter is required.
+    :type lattitude: str
+    :param : Longitude of center location that search is done for. Top or distance parameter is required.
+    :type longitude: str
+    :param distance: Filter which allows user to limit distance of returned locations. Parameter is used together with
+        lattitude/longitude.
+    :type distance: str
+    :param bounding_box: Limits results to geographical bounding box.
+    :type bounding_box: list
+    :param zipcode: Filter results based on zipcode
+    :type zipcode: str
+    :param location_zipcode: Find the closest pickup points using zipcode
+    :type location_zipcode: str
+    :param strict_zip_code: This is used together with zip_code parameter. If this is set True only results that
+        exactly match to the location zipcode are shown. If strict_zip_code is False, postal code area list is used to
+        match location to queried zipcode. Default value is False.
+    :type strict_zip_code: bool
+    :param city: Filter results based on city. Matches to any language version of the city.
+    :type city: str
+    :param municipality: Filter results based on municipality. Matches to any language version of the municipality.
+    :type municipality: str
+    :param pup_code: Filter results based on PupCode
+    :type pup_code: str
+    :param partner_type: Filter results based on partner type. Allowed types: "POSTI", "AIBE", "BOXNET",
+        "TOPO_CENTRAS".
+    :type partner_type: str
+    """
+    params = {
+        "countryCode": country_code,
+        "top": top,
+        "types": types,
+        "lat": lattitude,
+        "lng": longitude,
+        "distance": distance,
+        "zipCode": zipcode,
+        "locationZipCode": location_zipcode,
+        "strictZipCode": "true" if strict_zip_code else None,
+        "city": city,
+        "municipality": municipality,
+        "pupCode": pup_code,
+        "partnerType": partner_type,
+    }
+
+    if bounding_box is not None:
+        params["topLeftLat"] = bounding_box[0]
+        params["topLeftLng"] = bounding_box[1]
+        params["bottomRightLat"] = bounding_box[2]
+        params["bottomRightLng"] = bounding_box[3]
+
+    for key, value in list(params.items()):
+        if value is None:
+            params.pop(key)
+
+    response = requests.get(LOCATION_SERVICE_API_ENDPOINT, params=params)
+    response.raise_for_status()
+    return Locations(response.json()["locations"])

@@ -134,6 +134,17 @@ Retrieve a list of agents (pickup points) as follows:
 
 Response will be an ``Agents`` object that can be iterated over for individual agent data.
 
+Locations
+~~~~~~~~~
+
+As the above agents method is a paid service we also provide an interface to the Posti location service API.
+
+.. code:: python
+    from smartship.carriers.posti import get_locations
+    locations = get_locations(country_code="FI", zipcode="00120")
+
+Response will be a ``Locations`` object that can be iterated over for individual location data.
+
 Advanced usage
 ~~~~~~~~~~~~~~
 
