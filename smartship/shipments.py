@@ -80,7 +80,7 @@ class ShipmentResponse(object):
         elif self.response_code is ResponseCode.UNAUTHORIZED:
             error_message = "Unauthorized API use: %s" % self.raw.reason
         elif self.response_code is ResponseCode.VALIDATION_ERROR:
-            fields = ",".join(error["field"] for error in self.raw.json())
+            fields = ",".join(str(error["field"]) for error in self.raw.json())
             error_message = "Validation failed on fields: %s" % fields
         elif self.response_code is ResponseCode.SERVER_ERROR:
             try:
