@@ -62,7 +62,14 @@ class TestShipment(object):
                         },
                         {
                             'id': 'SPTR'
-                        }
+                        },
+                        {
+                            'id': 'COD',
+                            'amount': Decimal('1.25'),
+                            'account': 'FI2112345600000785',
+                            'bank': 'DEVBANKX',
+                            'currencyCode': 'EUR',
+                        },
                     ],
                 },
                 'senderPartners': [
