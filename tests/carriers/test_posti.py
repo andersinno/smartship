@@ -6,7 +6,8 @@ from mock import Mock, patch
 from pytest import raises
 
 from smartship.carriers.posti import (
-    LOCATION_SERVICE_API_ENDPOINT, create_shipment, get_locations)
+    LOCATION_SERVICE_API_ENDPOINT, create_shipment, get_additional_services,
+    get_locations)
 from smartship.shipments import DEFAULT_PDF_CONFIG, Shipment
 
 
@@ -307,3 +308,14 @@ def test_get_locations(mock_get):
     assert len(list(locations)) == 1
     assert locations[0]["type"] == "POSTOFFICE"
     mock_get.assert_called_once_with(LOCATION_SERVICE_API_ENDPOINT, params={"zipCode": "20100"})
+
+
+def test_additional_services():
+    additional_services = get_additional_services("PO2103")
+    assert len(additional_services) == 11
+    assert additional_services["COD"] == "Postiennakko"
+
+
+def test_additional_service_rename():
+    additional_services = get_additional_services("POF1")
+    assert additional_services["COD"] == "Jälkivaatimus"

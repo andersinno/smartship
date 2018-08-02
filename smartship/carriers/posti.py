@@ -14,38 +14,119 @@ CARRIER_CODE = "POSTI"
 CARRIER_DESCRIPTION = "Posti Oy, Paketit ja kuljetusyksiköt"
 
 SERVICES = {
+    "IT14I": "Posti - Express Business Day parcel (Ulkomaa)",
+    "ITKY14I": "Posti - Express Business Day pallet (Ulkomaa)",
+    "ITPR": "Posti - Priority Parcel",
     "PO2017": "Posti - EMS",
     "PO2017D": "Posti - EMS DocPack",
-    "ITKY14I": "Posti - Express Business Day pallet (Ulkomaa)",
-    "IT14I": "Posti - Express Business Day parcel (Ulkomaa)",
     "PO2102": "Posti - Express-paketti",
-    "PO2144": "Posti - Express-rahti",
+    "PO2103": "Posti - Postipaketti",
     "PO2104": "Posti - Kotipaketti",
-    "PO5041": "Posti - Näytelähetys",
+    "PO2106": "Posti - SmartPOST Viro",
     "PO2108": "Posti - Palautus",
+    "PO2144": "Posti - Express-rahti",
+    "PO2461": "Posti - Pikkupaketti",
     "PO2711": "Posti - Parcel Connect",
     "PO2718": "Posti - Parcel Return Connect",
-    "PO2461": "Posti - Pikkupaketti",
-    "PO2103": "Posti - Postipaketti",
-    "ITPR": "Posti - Priority Parcel",
-    "PO2106": "Posti - SmartPOST Viro",
+    "PO5001": "Posti - Pikakirje",
+    "PO5002": "Posti - Economy-kirje postiennakolla",
+    "PO5003": "Posti - Kirjattu kirje",
+    "PO5004": "Posti - Saantitodistuskirje",
+    "PO5006": "Posti - Postivakuutettu",
+    "PO5007": "Posti - Priority-kirje postiennakolla",
+    "PO5041": "Posti - Näytelähetys",
+    "POF1": "Posti - Rahti",
 }
 
 NATIONAL_SERVICE_KEYS = [
-    'ITPR',
-    'PO2102',
-    'PO2103',
-    'PO2104',
-    'PO2108',
-    'PO2144',
-    'PO2461',
-    'PO5041',
+    "ITPR",
+    "PO2102",
+    "PO2103",
+    "PO2104",
+    "PO2108",
+    "PO2144",
+    "PO2461",
+    "PO5001",
+    "PO5002",
+    "PO5003",
+    "PO5004",
+    "PO5006",
+    "PO5007",
+    "PO5041",
+    "POF1",
+
 ]
 
 NATIONAL_SERVICES = {
     key: description
     for (key, description) in SERVICES.items()
     if key in NATIONAL_SERVICE_KEYS
+}
+
+ADDITIONAL_SERVICES = {
+    "COD": "Postiennakko",
+    "DLV": "Kotiinkuljetus",
+    "DLV00": "Samana päivänä 00",
+    "DLV09": "Aamuksi 09",
+    "DLV21": "Illaksi 21",
+    "DLVCALL": "Soitto ennen jakelua",
+    "DLVDEP": "Toimitus terminaaliin",
+    "DLVNOPOD": "Luovuttaminen ilman vastaanottajan kuittausta",
+    "DLVPRIV": "Jakelu yksityishenkilölle",
+    "DLVSAT": "Lauantaijakelu",
+    "DLVT": "Aikataulutettu jakelu",
+    "DNG": "Vaarallisten aineiden kuljetus (VAK) / LQ Kuljetus",
+    "FDNGPP": "LQ Prosessilupa",
+    "FRAG": "Särkyvä",
+    "INSU": "Kuljetusvakuutus",
+    "MAXI": "Maksikoko",
+    "MPRC": "Monikollilähetys",
+    "NOT": "Sähköinen saapumisilmoitus",
+    "OPAY": "Maksaja muu kuin lähettäjä",
+    "PERS": "Henkilökohtaisesti luovutettava",
+    "PRENOT": "Sähköinen ennakkoilmoitus",
+    "PUPDEP": "Nouto terminaalista",
+    "PUPOPT": "Vaihtoehtoinen noutopiste",
+    "RECYCLE": "Kuljetus kierrätykseen",
+    "REG": "Kirjaaminen",
+    "REMIPOST": "Noutomuistutus kirjeenä",
+    "RETNEXT": "Säilytysajan pidennys",
+    "SPTR": "Suri",
+    "TECH": "Nosturipalvelu",
+    "WARM": "Lämminkuljetus",
+}
+
+VALID_ADDITIONAL_SERVICES = {
+    'IT14I': ['COD', 'DLV', 'DLVCALL', 'DLVNOPOD', 'DNG', 'FRAG', 'MPRC', 'OPAY', 'SPTR'],
+    'ITKY14I': ['COD', 'DLV', 'DLVCALL', 'DLVNOPOD', 'DNG', 'FDNGPP', 'FRAG', 'MPRC', 'OPAY', 'SPTR'],
+    'ITPR': ['OPAY'],
+    'PO2017': ['OPAY'],
+    'PO2017D': ['OPAY'],
+    'PO2102': [
+        'COD', 'DLV00', 'DLV09', 'DLVCALL', 'DLVNOPOD', 'DLVSAT', 'DNG',
+        'FDNGPP', 'FRAG', 'OPAY', 'PERS', 'PRENOT', 'SPTR'
+    ],
+    'PO2103': ['COD', 'FDNGPP', 'FRAG', 'NOT', 'OPAY', 'PERS', 'PUPOPT', 'REG', 'REMIPOST', 'RETNEXT', 'SPTR'],
+    'PO2104': ['COD', 'DLVNOPOD', 'DNG', 'FDNGPP', 'FRAG', 'OPAY', 'SPTR'],
+    'PO2106': ['COD', 'NOT', 'OPAY'],
+    'PO2108': ['FDNGPP', 'FRAG', 'SPTR'],
+    'PO2144': [
+        'COD', 'DLV00', 'DLV09', 'DLV21', 'DLVCALL', 'DLVNOPOD', 'DNG',
+        'OPAY', 'PERS', 'PRENOT', 'PUPDEP', 'RECYCLE', 'WARM'
+    ],
+    'PO2461': ['OPAY'],
+    'PO2711': ['COD', 'DLV', 'OPAY', 'PUPOPT', 'SPTR'],
+    'PO2718': ['OPAY', 'SPTR'],
+    'PO5001': ['DLVSAT', 'OPAY'],
+    'PO5002': ['COD', 'NOT', 'OPAY', 'REMIPOST'],
+    'PO5003': ['NOT', 'OPAY', 'PERS', 'REMIPOST'],
+    'PO5004': ['NOT', 'OPAY', 'PERS', 'REMIPOST'],
+    'PO5006': ['COD', 'INSU', 'NOT', 'OPAY', 'PERS', 'REMIPOST'],
+    'PO5007': ['COD', 'MAXI', 'NOT', 'OPAY', 'REMIPOST'],
+    'POF1': [
+        'COD', 'DLVCALL', 'DLVDEP', 'DLVNOPOD', 'DLVPRIV', 'DLVT', 'DNG',
+        'OPAY', 'PERS', 'PUPDEP', 'TECH', 'WARM'
+    ],
 }
 
 LOCATION_SERVICE_API_ENDPOINT = "https://locationservice.posti.com/location"
@@ -241,3 +322,15 @@ def get_locations(
     response = requests.get(LOCATION_SERVICE_API_ENDPOINT, params=params)
     response.raise_for_status()
     return Locations(response.json()["locations"])
+
+
+def get_additional_services(service_id):
+    if service_id not in VALID_ADDITIONAL_SERVICES:
+        return {}
+    result = {}
+    for service_code in VALID_ADDITIONAL_SERVICES[service_id]:
+        result[service_code] = ADDITIONAL_SERVICES[service_code]
+    if service_id == "POF1":
+        result["COD"] = "Jälkivaatimus"
+        result["SPTR"] = "Pitkä lähetys"
+    return result
