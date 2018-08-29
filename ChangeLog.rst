@@ -1,6 +1,14 @@
 SmartShip Change Log
 ====================
 
+1.1.1
+-----
+
+Released at 2018-08-29 12:55 +0300.
+
+* First Open Source release.
+
+
 1.1.0
 -----
 
