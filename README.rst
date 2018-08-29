@@ -140,6 +140,7 @@ Locations
 As the above agents method is a paid service we also provide an interface to the Posti location service API.
 
 .. code:: python
+
     from smartship.carriers.posti import get_locations
     locations = get_locations(country_code="FI", zipcode="00120")
 
