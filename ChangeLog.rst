@@ -1,6 +1,11 @@
 SmartShip Change Log
 ====================
 
+1.1.2
+-----
+
+Released at 2018-08-29 13:10 +0300.
+
 * Fix README formatting so that it is valid ReST
 
 
