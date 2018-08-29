@@ -1,6 +1,9 @@
 SmartShip Change Log
 ====================
 
+* Fix README formatting so that it is valid ReST
+
+
 1.1.1
 -----
 
