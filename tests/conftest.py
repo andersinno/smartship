@@ -40,6 +40,7 @@ def simple_shipment():
 def complex_shipment():
     return Shipment(
         orderNo="456",
+        freeText1="This is some sample free text here.",
         senderReference="789",
         sender=Sender({
             "quickId": "1",

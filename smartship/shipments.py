@@ -28,6 +28,7 @@ class Shipment(object):
     parcels = attr.ib(default=Parcels())
     service = attr.ib(default=Service())
     senderReference = attr.ib(default="")
+    freeText1 = attr.ib(default="")
     # TODO: add remaining attributes
 
     data = attr.ib(default={})
@@ -55,6 +56,8 @@ class Shipment(object):
             data["shipment"]["orderNo"] = self.orderNo
         if self.senderReference:
             data["shipment"]["senderReference"] = self.senderReference
+        if self.freeText1:
+            data["shipment"]["freeText1"] = self.freeText1
         # TODO: set remaining attributes, if given
         # Drop top-level key's with empty value
         self.data = dict((key, value) for key, value in six.iteritems(data) if value)

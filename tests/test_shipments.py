@@ -82,6 +82,7 @@ class TestShipment(object):
                     'quickId': '2'
                 },
                 'orderNo': '456',
+                'freeText1': 'This is some sample free text here.',
                 'senderReference': '789',
                 'parcels': [
                     {

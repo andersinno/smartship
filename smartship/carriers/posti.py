@@ -144,7 +144,7 @@ class WeightedParcels(Parcels):
 
 def create_shipment(
         custno, service_id, receiver, sender, parcels,
-        agent=None, order_no=None, sender_reference=None, pdf_config=None, addons=None):
+        agent=None, order_no=None, sender_reference=None, pdf_config=None, addons=None, free_text=None,):
     """
     Create a shipment using the Posti carrier.
 
@@ -201,6 +201,8 @@ def create_shipment(
                 },
             ]
     :type addons: list
+    :param free_text: free text (optional)
+    :type free_text: str
     :return: Shipment instance
     :rtype: smartship.shipments.Shipment
     """
@@ -223,7 +225,8 @@ def create_shipment(
         kwargs["senderReference"] = sender_reference
     if pdf_config:
         kwargs["pdfConfig"] = PDFConfig(pdf_config)
-
+    if free_text:
+        kwargs["freeText1"] = free_text
     return Shipment(**kwargs)
 
 
