@@ -1,6 +1,14 @@
 SmartShip Change Log
 ====================
 
+1.2.0
+-----
+
+Released at 2018-09-25 14:10 +0300.
+
+* Add free text field to shipment
+
+
 1.1.2
 -----
 
