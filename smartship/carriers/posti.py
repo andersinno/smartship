@@ -22,9 +22,12 @@ SERVICES = {
     "PO2102": "Posti - Express-paketti",
     "PO2103": "Posti - Postipaketti",
     "PO2104": "Posti - Kotipaketti",
-    "PO2106": "Posti - SmartPOST Viro",
     "PO2108": "Posti - Palautus",
+    "PO2114": "Posti - Ruokakuljetus",
+    "PO2115": "Posti - Ruokakuljetus automaattiin",
     "PO2144": "Posti - Express-rahti",
+    "PO2331": "Posti - Postal Parcel Baltics",
+    "PO2338": "Posti - Postal Parcel Baltics Return",
     "PO2461": "Posti - Pikkupaketti",
     "PO2711": "Posti - Parcel Connect",
     "PO2718": "Posti - Parcel Return Connect",
@@ -34,8 +37,6 @@ SERVICES = {
     "PO5004": "Posti - Saantitodistuskirje",
     "PO5006": "Posti - Postivakuutettu",
     "PO5007": "Posti - Priority-kirje postiennakolla",
-    "PO5041": "Posti - Näytelähetys",
-    "POF1": "Posti - Rahti",
 }
 
 NATIONAL_SERVICE_KEYS = [
@@ -44,6 +45,8 @@ NATIONAL_SERVICE_KEYS = [
     "PO2103",
     "PO2104",
     "PO2108",
+    "PO2114",
+    "PO2115",
     "PO2144",
     "PO2461",
     "PO5001",
@@ -52,9 +55,6 @@ NATIONAL_SERVICE_KEYS = [
     "PO5004",
     "PO5006",
     "PO5007",
-    "PO5041",
-    "POF1",
-
 ]
 
 NATIONAL_SERVICES = {
@@ -65,12 +65,15 @@ NATIONAL_SERVICES = {
 
 ADDITIONAL_SERVICES = {
     "COD": "Postiennakko",
+    "COLD": "Jääkaappilämpö",
     "DLV": "Kotiinkuljetus",
     "DLV00": "Samana päivänä 00",
     "DLV09": "Aamuksi 09",
     "DLV21": "Illaksi 21",
     "DLVCALL": "Soitto ennen jakelua",
+    "DLVANOT": "Jakeluajankohdan sopiminen puhelimitse",
     "DLVDEP": "Toimitus terminaaliin",
+    "DLVINST": "Käyttökuntoon asennus",
     "DLVNOPOD": "Luovuttaminen ilman vastaanottajan kuittausta",
     "DLVPRIV": "Jakelu yksityishenkilölle",
     "DLVSAT": "Lauantaijakelu",
@@ -78,15 +81,19 @@ ADDITIONAL_SERVICES = {
     "DNG": "Vaarallisten aineiden kuljetus (VAK) / LQ Kuljetus",
     "FDNGPP": "LQ Prosessilupa",
     "FRAG": "Särkyvä",
+    "FRZ": "Pakaste",
     "INSU": "Kuljetusvakuutus",
     "MAXI": "Maksikoko",
     "MPRC": "Monikollilähetys",
+    "NOBOX": "Ohjauksen esto ulkoautomaattiin",
     "NOT": "Sähköinen saapumisilmoitus",
+    "NOTLTR": "Saapumisilmoitus kirjeenä",
     "OPAY": "Maksaja muu kuin lähettäjä",
     "PERS": "Henkilökohtaisesti luovutettava",
     "PRENOT": "Sähköinen ennakkoilmoitus",
     "PUPDEP": "Nouto terminaalista",
     "PUPOPT": "Vaihtoehtoinen noutopiste",
+    "RBLOCK": "Pakettiohjauksen esto",
     "RECYCLE": "Kuljetus kierrätykseen",
     "REG": "Kirjaaminen",
     "REMIPOST": "Noutomuistutus kirjeenä",
@@ -97,23 +104,30 @@ ADDITIONAL_SERVICES = {
 }
 
 VALID_ADDITIONAL_SERVICES = {
-    'IT14I': ['COD', 'DLV', 'DLVCALL', 'DLVNOPOD', 'DNG', 'FRAG', 'MPRC', 'OPAY', 'SPTR'],
-    'ITKY14I': ['COD', 'DLV', 'DLVCALL', 'DLVNOPOD', 'DNG', 'FDNGPP', 'FRAG', 'MPRC', 'OPAY', 'SPTR'],
+    'IT14I': ['COD', 'DLV', 'DLVCALL', 'DLVNOPOD', 'FDNGPP', 'FRAG', 'MPRC', 'OPAY', 'SPTR'],
+    'ITKY14I': [
+        'COD', 'DLV00', 'DLV09', 'DLV21', 'DLVCALL', 'DLVINST', 'DLVNOPOD', 'DNG', 'MPRC',
+        'OPAY', 'PERS', 'PRENOT', 'PUPDEP', 'RECYCLE', 'SPTR'],
     'ITPR': ['OPAY'],
     'PO2017': ['OPAY'],
     'PO2017D': ['OPAY'],
     'PO2102': [
-        'COD', 'DLV00', 'DLV09', 'DLVCALL', 'DLVNOPOD', 'DLVSAT', 'DNG',
-        'FDNGPP', 'FRAG', 'OPAY', 'PERS', 'PRENOT', 'SPTR'
+        'COD', 'DLV00', 'DLV09', 'DLVCALL', 'DLVINST', 'DLVNOPOD', 'DLVSAT', 'DNG',
+        'FDNGPP', 'FRAG', 'NOT', 'OPAY', 'PERS', 'PRENOT', 'RBLOCK', 'RECYCLE', 'SPTR'
     ],
-    'PO2103': ['COD', 'FDNGPP', 'FRAG', 'NOT', 'OPAY', 'PERS', 'PUPOPT', 'REG', 'REMIPOST', 'RETNEXT', 'SPTR'],
-    'PO2104': ['COD', 'DLVNOPOD', 'DNG', 'FDNGPP', 'FRAG', 'OPAY', 'SPTR'],
-    'PO2106': ['COD', 'NOT', 'OPAY'],
-    'PO2108': ['FDNGPP', 'FRAG', 'SPTR'],
+    'PO2103': [
+        'COD', 'FDNGPP', 'FRAG', 'NOBOX', 'NOT', 'NOTLTR', 'OPAY', 'PERS', 'PUPOPT',
+        'RBLOCK', 'REG', 'REMIPOST', 'RETNEXT', 'SPTR'],
+    'PO2104': ['COD', 'DLVNOPOD', 'DLVANOT', 'DNG', 'FDNGPP', 'FRAG', 'OPAY', 'PERS', 'SPTR'],
+    'PO2108': ['FDNGPP', 'FRAG', 'OPAY', 'SPTR'],
+    'PO2114': ['COLD', 'OPAY', 'FDNGPP', 'FRZ'],
+    'PO2115': ['COLD', 'OPAY', 'FDNGPP', 'FRZ'],
     'PO2144': [
-        'COD', 'DLV00', 'DLV09', 'DLV21', 'DLVCALL', 'DLVNOPOD', 'DNG',
-        'OPAY', 'PERS', 'PRENOT', 'PUPDEP', 'RECYCLE', 'WARM'
+        'COD', 'DLV00', 'DLV09', 'DLV21', 'DLVANOT', 'DLVCALL', 'DLVINST', 'DLVNOPOD', 'DNG',
+        'OPAY', 'PERS', 'PRENOT', 'RECYCLE', 'WARM'
     ],
+    'PO2331': ['FDNGPP', 'OPAY', 'SPTR', 'FRAG', 'NOT'],
+    'PO2338': ['FDNGPP', 'OPAY', 'SPTR', 'FRAG'],
     'PO2461': ['OPAY'],
     'PO2711': ['COD', 'DLV', 'OPAY', 'PUPOPT', 'SPTR'],
     'PO2718': ['OPAY', 'SPTR'],
@@ -122,11 +136,7 @@ VALID_ADDITIONAL_SERVICES = {
     'PO5003': ['NOT', 'OPAY', 'PERS', 'REMIPOST'],
     'PO5004': ['NOT', 'OPAY', 'PERS', 'REMIPOST'],
     'PO5006': ['COD', 'INSU', 'NOT', 'OPAY', 'PERS', 'REMIPOST'],
-    'PO5007': ['COD', 'MAXI', 'NOT', 'OPAY', 'REMIPOST'],
-    'POF1': [
-        'COD', 'DLVCALL', 'DLVDEP', 'DLVNOPOD', 'DLVPRIV', 'DLVT', 'DNG',
-        'OPAY', 'PERS', 'PUPDEP', 'TECH', 'WARM'
-    ],
+    'PO5007': ['COD', 'NOT', 'OPAY', 'REMIPOST'],
 }
 
 LOCATION_SERVICE_API_ENDPOINT = "https://locationservice.posti.com/location"
@@ -333,7 +343,4 @@ def get_additional_services(service_id):
     result = {}
     for service_code in VALID_ADDITIONAL_SERVICES[service_id]:
         result[service_code] = ADDITIONAL_SERVICES[service_code]
-    if service_id == "POF1":
-        result["COD"] = "Jälkivaatimus"
-        result["SPTR"] = "Pitkä lähetys"
     return result

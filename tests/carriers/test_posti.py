@@ -312,10 +312,5 @@ def test_get_locations(mock_get):
 
 def test_additional_services():
     additional_services = get_additional_services("PO2103")
-    assert len(additional_services) == 11
+    assert len(additional_services) == 14
     assert additional_services["COD"] == "Postiennakko"
-
-
-def test_additional_service_rename():
-    additional_services = get_additional_services("POF1")
-    assert additional_services["COD"] == "Jälkivaatimus"
